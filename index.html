@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Byzantine Music Library</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    .folder { cursor: pointer; font-weight: bold; }
+    .file { margin-left: 20px; }
+    .folder-content { margin-left: 20px; display: none; }
+  </style>
+</head>
+<body>
+
+<h2>📜 Byzantine Music Library</h2>
+<div id="app"></div>
+
+<script>
+const API_KEY = "AIzaSyBqvqR37LmLLMJVk6e5OlNgGPN3x20xrK8";
+const ROOT_FOLDER = "1TfBVD9ixWOJ7asLIO6bQdCYj17inMc1G";
+
+const cache = {};
+
+async function loadFolder(folderId) {
+  if (cache[folderId]) return cache[folderId];
+
+  const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+trashed=false&fields=files(id,name,mimeType)&key=${API_KEY}`;
+  
+  const res = await fetch(url);
+  const data = await res.json();
+
+  cache[folderId] = data.files;
+  return data.files;
+}
+
+function createFolderElement(folder) {
+  const container = document.createElement("div");
+
+  const title = document.createElement("div");
+  title.textContent = "📁 " + folder.name;
+  title.className = "folder";
+
+  const content = document.createElement("div");
+  content.className = "folder-content";
+
+  let loaded = false;
+
+  title.onclick = async () => {
+    content.style.display = content.style.display === "none" ? "block" : "none";
+
+    if (!loaded) {
+      const items = await loadFolder(folder.id);
+
+      items.forEach(item => {
+        if (item.mimeType === "application/vnd.google-apps.folder") {
+          content.appendChild(createFolderElement(item));
+        } else if (item.mimeType === "application/pdf") {
+          const file = document.createElement("div");
+          file.className = "file";
+
+          const link = document.createElement("a");
+          link.textContent = "📄 " + item.name;
+          link.href = `https://drive.google.com/file/d/${item.id}/preview`;
+          link.target = "_blank";
+
+          file.appendChild(link);
+          content.appendChild(file);
+        }
+      });
+
+      loaded = true;
+    }
+  };
+
+  container.appendChild(title);
+  container.appendChild(content);
+
+  return container;
+}
+
+async function init() {
+  const rootItems = await loadFolder(ROOT_FOLDER);
+  const app = document.getElementById("app");
+
+  rootItems.forEach(item => {
+    if (item.mimeType === "application/vnd.google-apps.folder") {
+      app.appendChild(createFolderElement(item));
+    }
+  });
+}
+
+init();
+</script>
+
+</body>
+</html>
