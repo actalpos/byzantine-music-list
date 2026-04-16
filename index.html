@@ -246,7 +246,7 @@ async function openFolder(folderId, push = true, name = "") {
         <div class="name">${item.name}</div>
       `;
       tile.onclick = () => {
-        window.open(`https://drive.google.com/file/d/${item.id}/preview`, "_blank");
+        window.open(`https://drive.google.com/uc?export=view&id=${item.id}`, "_blank");
       };
     }
 
