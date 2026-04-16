@@ -207,10 +207,25 @@ async function openFolder(folderId, push = true, name = "") {
 
   const items = await loadFolder(folderId);
   
+  function extractNumber(str) {
+    const match = str.match(/^\d+/);
+    return match ? parseInt(match[0], 10) : Infinity;
+  }
+  
   items.sort((a, b) => {
+  
+    // 1. folderele primele
     if (a.mimeType === "application/vnd.google-apps.folder" && b.mimeType !== "application/vnd.google-apps.folder") return -1;
     if (a.mimeType !== "application/vnd.google-apps.folder" && b.mimeType === "application/vnd.google-apps.folder") return 1;
-    return a.name.localeCompare(b.name);
+  
+    // 2. număr din față
+    const numA = extractNumber(a.name);
+    const numB = extractNumber(b.name);
+  
+    if (numA !== numB) return numA - numB;
+  
+    // 3. fallback: sort alfabet + numeric
+    return a.name.localeCompare(b.name, 'ro', { numeric: true });
   });
 
   app.innerHTML = "";
