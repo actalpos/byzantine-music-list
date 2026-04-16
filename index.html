@@ -194,7 +194,7 @@ async function openFolder(folderId, push = true, name = "") {
     history.pushState(
       { folderId, name },
       "",
-      "#" + folderId
+      window.location.pathname + "#" + folderId
     );
   }
 
@@ -246,7 +246,7 @@ window.onpopstate = function(event) {
 history.replaceState(
   { folderId: ROOT, name: "Home" },
   "",
-  "#" + ROOT
+  window.location.pathname + "#" + ROOT
 );
 
 openFolder(ROOT, false, "Home");
