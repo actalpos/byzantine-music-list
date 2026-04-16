@@ -149,7 +149,7 @@ body {
 <body>
 
 <div class="header">
-  <div class="back" onclick="goBack()">⬅ Back</div>
+  <!-- <div class="back" onclick="goBack()">⬅ Back</div> -->
   <div class="breadcrumbs" id="breadcrumbs"></div>
 </div>
 
@@ -187,7 +187,16 @@ function goBack() {
 }
 
 async function openFolder(folderId, push = true, name = "") {
-  if (push) pathStack.push({ id: folderId, name });
+
+  if (push) {
+    pathStack.push({ id: folderId, name });
+
+    history.pushState(
+      { folderId, name },
+      "",
+      "#" + folderId
+    );
+  }
 
   renderBreadcrumbs();
 
@@ -227,6 +236,18 @@ async function openFolder(folderId, push = true, name = "") {
     app.appendChild(tile);
   });
 }
+
+window.onpopstate = function(event) {
+  if (event.state) {
+    pathStack.pop();
+    openFolder(event.state.folderId, false);
+  }
+};
+history.replaceState(
+  { folderId: ROOT, name: "Home" },
+  "",
+  "#" + ROOT
+);
 
 openFolder(ROOT, false, "Home");
 </script>
