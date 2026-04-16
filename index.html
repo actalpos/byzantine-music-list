@@ -109,6 +109,12 @@ async function openFolder(folderId, push = true, name = "") {
   app.innerHTML = "Loading...";
 
   const items = await loadFolder(folderId);
+  
+  items.sort((a, b) => {
+    if (a.mimeType === "application/vnd.google-apps.folder" && b.mimeType !== "application/vnd.google-apps.folder") return -1;
+    if (a.mimeType !== "application/vnd.google-apps.folder" && b.mimeType === "application/vnd.google-apps.folder") return 1;
+    return a.name.localeCompare(b.name);
+  });
 
   app.innerHTML = "";
 
