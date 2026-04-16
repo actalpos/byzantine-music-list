@@ -40,7 +40,7 @@ body {
   .tile {
     padding: 18px;
     font-size: 18px;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid grey;
   }
 
   .icon {
@@ -57,7 +57,7 @@ body {
   .tile {
     padding: 20px;
     font-size: 18px;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid grey;
   }
 
   .icon {
@@ -74,7 +74,7 @@ body {
   .tile {
     padding: 14px;
     font-size: 16px;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid grey;
   }
 
   .icon {
@@ -87,8 +87,6 @@ body {
   align-items: center;
   gap: 12px;
   padding: 12px;
-  border-radius: 10px;
-  background: light-grey;
   cursor: pointer;
 }
 
@@ -96,6 +94,25 @@ body {
   font-size: 24px;
 }
 
+  .folder-icon {
+  width: 28px;
+  height: 20px;
+  background: #fbbc04; /* galben Google */
+  border-radius: 3px;
+  position: relative;
+}
+
+.folder-icon::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 4px;
+  width: 14px;
+  height: 6px;
+  background: #fbbc04;
+  border-radius: 2px 2px 0 0;
+}
+  
 .pdf-icon {
   background: #d93025;
   color: white;
@@ -178,7 +195,7 @@ async function openFolder(folderId, push = true, name = "") {
 
     if (item.mimeType === "application/vnd.google-apps.folder") {
       tile.innerHTML = `
-        <div class="icon">📁</div>
+        <div class="icon folder-icon"></div>
         <div class="name">${item.name}</div>
       `;
       tile.onclick = () => openFolder(item.id, true, item.name);
