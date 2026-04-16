@@ -193,8 +193,11 @@ async function openFolder(folderId, push = true, name = "") {
     history.pushState(
       { folderId, name },
       "",
-      window.location.pathname + "#" + folderId
+      "#" + folderId
     );
+    
+    // FORCE Safari update
+    window.location.hash = folderId;
   }
 
   renderBreadcrumbs();
@@ -245,8 +248,10 @@ window.onpopstate = function(event) {
 history.replaceState(
   { folderId: ROOT, name: "Home" },
   "",
-  window.location.pathname + "#" + ROOT
+  "#" + ROOT
 );
+
+window.location.hash = ROOT;
 
 openFolder(ROOT, false, "Home");
 </script>
